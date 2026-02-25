@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, Heart, Facebook, Instagram, Youtube, ArrowUp } from 'lucide-react';
+import { getSettings } from '@/lib/api';
+import { useEffect, useState } from 'react';
 
 const footerLinks = [
     {
@@ -39,6 +41,19 @@ const fadeUp = {
 
 export default function Footer() {
     const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    const [settings, setSettings] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        getSettings().then(data => {
+            const flat: Record<string, string> = {};
+            if (data && typeof data === 'object') {
+                Object.values(data).forEach((group: Record<string, string>) => {
+                    if (typeof group === 'object') Object.assign(flat, group);
+                });
+            }
+            setSettings(flat);
+        }).catch(() => { });
+    }, []);
 
     return (
         <footer className="relative bg-slate-950 text-white overflow-hidden">
@@ -52,9 +67,13 @@ export default function Footer() {
                     {/* Brand */}
                     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0} variants={fadeUp} className="lg:col-span-1 space-y-5">
                         <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg flex items-center justify-center">
-                                <span className="text-white font-black text-xl">M</span>
-                            </div>
+                            {settings.logo_url ? (
+                                <img src={settings.logo_url} alt="Logo" className="h-12 w-12 object-contain rounded-xl" />
+                            ) : (
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg flex items-center justify-center">
+                                    <span className="text-white font-black text-xl">M</span>
+                                </div>
+                            )}
                             <div>
                                 <h3 className="text-lg font-black tracking-tight">MH As-Saodah</h3>
                                 <p className="text-xs font-semibold text-emerald-400 -mt-0.5 tracking-wider uppercase">Madrasah Ibtidaiyah</p>

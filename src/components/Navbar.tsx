@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Menu, X, Home, Info, Trophy, Newspaper, ChevronRight } from 'lucide-react';
+import { getSettings } from '@/lib/api';
 
 const navLinks = [
     { href: '/', label: 'Beranda', icon: Home },
@@ -17,11 +18,23 @@ export default function Navbar() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [settings, setSettings] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50);
         handleScroll();
         window.addEventListener('scroll', handleScroll, { passive: true });
+
+        getSettings().then(data => {
+            const flat: Record<string, string> = {};
+            if (data && typeof data === 'object') {
+                Object.values(data).forEach((group: Record<string, string>) => {
+                    if (typeof group === 'object') Object.assign(flat, group);
+                });
+            }
+            setSettings(flat);
+        }).catch(() => { });
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -47,16 +60,20 @@ export default function Navbar() {
                 <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group">
-                        <motion.div
-                            whileHover={{ scale: 1.05, rotate: 3 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="relative h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-500/25 flex items-center justify-center"
-                        >
-                            <span className="text-white font-black text-lg">M</span>
-                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-amber-400 rounded-md flex items-center justify-center">
-                                <span className="text-[8px] font-black text-amber-900">H</span>
-                            </div>
-                        </motion.div>
+                        {settings.logo_url ? (
+                            <img src={settings.logo_url} alt="Logo" className="h-11 w-11 object-contain rounded-xl shadow-lg shadow-emerald-500/25 transition-transform duration-300 group-hover:scale-105" />
+                        ) : (
+                            <motion.div
+                                whileHover={{ scale: 1.05, rotate: 3 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="relative h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-500/25 flex items-center justify-center"
+                            >
+                                <span className="text-white font-black text-lg">M</span>
+                                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-amber-400 rounded-md flex items-center justify-center">
+                                    <span className="text-[8px] font-black text-amber-900">H</span>
+                                </div>
+                            </motion.div>
+                        )}
                         <div>
                             <span className={`text-lg font-black tracking-tight transition-colors duration-300 ${scrolled ? 'text-slate-900' : 'text-white'}`}>
                                 MH As-Saodah
@@ -159,9 +176,13 @@ export default function Navbar() {
                         >
                             <div className="flex items-center justify-between p-6 border-b border-slate-100">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
-                                        <span className="text-white font-black">M</span>
-                                    </div>
+                                    {settings.logo_url ? (
+                                        <img src={settings.logo_url} alt="Logo" className="h-10 w-10 object-contain rounded-xl" />
+                                    ) : (
+                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
+                                            <span className="text-white font-black">M</span>
+                                        </div>
+                                    )}
                                     <div>
                                         <span className="text-base font-black text-slate-900">MH As-Saodah</span>
                                         <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-wider">Madrasah Ibtidaiyah</p>
