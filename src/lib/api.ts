@@ -84,42 +84,42 @@ export function storageUrl(path: string | null): string {
 
 export async function getSettings(): Promise<Record<string, WebSetting>> {
     const { data } = await api.get('/web/settings');
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getHeroes(): Promise<WebHero[]> {
     const { data } = await api.get('/web/heroes');
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getFacilities(): Promise<WebFacility[]> {
     const { data } = await api.get('/web/facilities');
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getAchievements(level?: string): Promise<WebAchievement[]> {
     const { data } = await api.get('/web/achievements', { params: level ? { level } : {} });
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getPosts(page = 1, perPage = 9): Promise<{ data: WebPost[]; last_page: number; total: number }> {
     const { data } = await api.get('/web/posts', { params: { page, per_page: perPage } });
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getPostBySlug(slug: string): Promise<WebPost> {
     const { data } = await api.get(`/web/posts/${slug}`);
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getTeachers(): Promise<WebTeacher[]> {
     const { data } = await api.get('/web/teachers');
-    return data;
+    return data?.data ?? data;
 }
 
 export async function getPpdbInfo(): Promise<PpdbInfo> {
     const { data } = await api.get('/web/ppdb/info');
-    return data;
+    return data?.data ?? data;
 }
 
 export async function submitPpdbRegistration(formData: Record<string, unknown>) {

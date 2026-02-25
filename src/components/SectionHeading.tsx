@@ -8,16 +8,18 @@ interface SectionHeadingProps {
     subtitle?: string;
     center?: boolean;
     light?: boolean;
+    align?: 'left' | 'center';
 }
 
-export default function SectionHeading({ badge, title, subtitle, center = true, light = false }: SectionHeadingProps) {
+export default function SectionHeading({ badge, title, subtitle, center = true, light = false, align }: SectionHeadingProps) {
+    const isCenter = align ? align === 'center' : center;
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6 }}
-            className={`max-w-2xl ${center ? 'mx-auto text-center' : ''} mb-12`}
+            className={`max-w-2xl ${isCenter ? 'mx-auto text-center' : ''} mb-12`}
         >
             {badge && (
                 <span className="inline-flex items-center rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/20 uppercase tracking-widest mb-4">
