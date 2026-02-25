@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://assaodah.santrix.my.id/api',
     headers: { 'Accept': 'application/json' },
 });
 
@@ -74,7 +74,7 @@ export interface PpdbInfo {
 
 // ============ FETCHERS ============
 
-const STORAGE_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/storage') || 'http://localhost:8000/storage';
+const STORAGE_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/storage') || 'https://assaodah.santrix.my.id/storage';
 
 export function storageUrl(path: string | null): string {
     if (!path) return '';
