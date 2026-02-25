@@ -210,7 +210,13 @@ export default function HomePage() {
                 >
                   <div className="aspect-[16/10] overflow-hidden relative">
                     {f.image_url ? (
-                      <img src={storageUrl(f.image_url)} alt={f.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <Image
+                        src={storageUrl(f.image_url)}
+                        alt={f.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
                     ) : (
                       <Image src="/images/school-facilities.png" alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                     )}
@@ -274,7 +280,13 @@ export default function HomePage() {
                   <Link href={`/informasi/${post.slug}`} className="block">
                     <div className="aspect-[16/10] rounded-3xl overflow-hidden mb-5 relative shadow-sm">
                       {post.thumbnail ? (
-                        <img src={storageUrl(post.thumbnail)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <Image
+                          src={storageUrl(post.thumbnail)}
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-700"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
                       ) : (
                         <Image src="/images/hero-madrasah.png" alt={post.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       )}

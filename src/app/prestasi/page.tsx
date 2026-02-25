@@ -89,8 +89,8 @@ export default function PrestasiPage() {
                             <p className="text-slate-400 text-lg">Belum ada data prestasi untuk level ini.</p>
                         </div>
                     ) : (
-                        <motion.div layout className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <AnimatePresence mode="popLayout">
+                        <motion.div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <AnimatePresence>
                                 {achievements.map((a) => (
                                     <motion.div
                                         key={a.id}
@@ -103,16 +103,22 @@ export default function PrestasiPage() {
                                     >
                                         <div className="aspect-[16/10] overflow-hidden relative">
                                             {a.image_url ? (
-                                                <img src={storageUrl(a.image_url)} alt={a.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                <Image
+                                                    src={storageUrl(a.image_url)}
+                                                    alt={a.title || 'Prestasi'}
+                                                    fill
+                                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                />
                                             ) : (
-                                                <div className={`w-full h-full bg-gradient-to-br ${levelColors[a.level] || 'from-slate-100 to-slate-200'} flex items-center justify-center`}>
+                                                <div className={`w-full h-full bg-gradient-to-br ${a.level && levelColors[a.level] ? levelColors[a.level] : 'from-slate-100 to-slate-200'} flex items-center justify-center`}>
                                                     <Trophy className="w-16 h-16 text-white/40" />
                                                 </div>
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
                                             <div className="absolute bottom-3 left-3">
-                                                <span className={`text-xs font-bold px-3 py-1.5 rounded-full text-white bg-gradient-to-r ${levelColors[a.level] || 'from-slate-400 to-slate-500'} shadow-lg`}>
-                                                    {a.level.charAt(0).toUpperCase() + a.level.slice(1)}
+                                                <span className={`text-xs font-bold px-3 py-1.5 rounded-full text-white bg-gradient-to-r ${a.level && levelColors[a.level] ? levelColors[a.level] : 'from-slate-400 to-slate-500'} shadow-lg`}>
+                                                    {a.level ? (a.level.charAt(0).toUpperCase() + a.level.slice(1)) : 'Prestasi'}
                                                 </span>
                                             </div>
                                         </div>
@@ -126,7 +132,7 @@ export default function PrestasiPage() {
                                             {a.student_name && (
                                                 <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                                                        <span className="text-xs font-bold text-emerald-600">{a.student_name.charAt(0)}</span>
+                                                        <span className="text-xs font-bold text-emerald-600">{a.student_name.charAt(0) || '-'}</span>
                                                     </div>
                                                     <span className="text-xs font-semibold text-slate-600">{a.student_name}</span>
                                                 </div>
