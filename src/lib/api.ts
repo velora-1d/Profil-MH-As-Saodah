@@ -46,7 +46,7 @@ export interface WebPost {
     slug: string;
     excerpt: string | null;
     content: string;
-    thumbnail: string | null;
+    thumbnail_url: string | null;
     status: string;
     published_at: string | null;
     meta_title: string | null;

@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 title: post.meta_title || post.title,
                 description: post.meta_description || post.excerpt || '',
                 type: 'article',
-                images: post.thumbnail ? [{ url: storageUrl(post.thumbnail) }] : [],
+                images: post.thumbnail_url ? [{ url: storageUrl(post.thumbnail_url) }] : [],
             },
         };
     } catch {
@@ -60,9 +60,9 @@ export default async function DetailArtikelPage({ params }: PageProps) {
             <section className="py-16 bg-white">
                 <div className="mx-auto max-w-3xl px-6 lg:px-8">
                     {/* Thumbnail */}
-                    {post.thumbnail && (
+                    {post.thumbnail_url && (
                         <div className="mb-10 -mt-20 relative z-20">
-                            <img src={storageUrl(post.thumbnail)} alt={post.title} className="w-full rounded-2xl shadow-2xl border border-white/20 aspect-[16/9] object-cover" />
+                            <img src={storageUrl(post.thumbnail_url)} alt={post.title} className="w-full rounded-2xl shadow-2xl border border-white/20 aspect-[16/9] object-cover" />
                         </div>
                     )}
 
@@ -87,7 +87,7 @@ export default async function DetailArtikelPage({ params }: PageProps) {
                                     '@type': 'Organization',
                                     name: 'MI MH As-Saodah',
                                 },
-                                image: post.thumbnail ? storageUrl(post.thumbnail) : undefined,
+                                image: post.thumbnail_url ? storageUrl(post.thumbnail_url) : undefined,
                             }),
                         }}
                     />

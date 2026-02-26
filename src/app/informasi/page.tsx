@@ -67,8 +67,8 @@ export default function InformasiPage() {
                                     <motion.article key={post.id} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="group">
                                         <Link href={`/informasi/${post.slug}`} className="block">
                                             <div className="aspect-[16/10] rounded-3xl overflow-hidden mb-5 relative shadow-sm">
-                                                {post.thumbnail ? (
-                                                    <img src={storageUrl(post.thumbnail)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                {post.thumbnail_url ? (
+                                                    <img src={storageUrl(post.thumbnail_url)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                                 ) : (
                                                     <Image src="/images/hero-madrasah.png" alt={post.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                                                 )}
