@@ -23,6 +23,9 @@ const settingsConfig = [
     { key: 'npsn', label: 'NPSN', placeholder: '12345678' },
     { key: 'akreditasi', label: 'Akreditasi', placeholder: 'A / B / C' },
   ]},
+  { group: 'Penampilan', items: [
+    { key: 'website_background', label: 'Background Website (Gambar)', placeholder: '', type: 'image' },
+  ]},
 ];
 
 export default function SettingsPage() {
@@ -80,13 +83,55 @@ export default function SettingsPage() {
               {group.items.map((item) => (
                 <div key={item.key}>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">{item.label}</label>
-                  <input
-                    type="text"
-                    value={values[item.key] || ''}
-                    onChange={(e) => setValues({ ...values, [item.key]: e.target.value })}
-                    placeholder={item.placeholder}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400 transition-all"
-                  />
+                  {(item as Record<string, unknown>).type === 'image' ? (
+                    <div className="relative">
+                      {values[item.key] ? (
+                         <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200 bg-slate-50 group">
+                           <img 
+                             src={values[item.key]} 
+                             alt="Background" 
+                             className="object-cover w-full h-full"
+                           />
+                           <button 
+                             type="button"
+                             onClick={() => setValues({ ...values, [item.key]: '' })}
+                             className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                           >
+                             Hapus
+                           </button>
+                         </div>
+                      ) : (
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              const uploadData = new FormData();
+                              uploadData.append('file', file);
+                              const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
+                              const data = await res.json();
+                              if (data.success) {
+                                setValues({ ...values, [item.key]: data.url });
+                              }
+                            } catch (error) {
+                              alert("Gagal mengunggah gambar!");
+                            }
+                          }}
+                          className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      value={values[item.key] || ''}
+                      onChange={(e) => setValues({ ...values, [item.key]: e.target.value })}
+                      placeholder={item.placeholder}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400 transition-all"
+                    />
+                  )}
                 </div>
               ))}
             </div>

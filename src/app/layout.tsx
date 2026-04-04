@@ -82,11 +82,23 @@ const jsonLd = {
   sameAs: [],
 };
 
-export default function RootLayout({
+import { db } from "@/db";
+import { webSettings } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let bgUrl = "";
+  try {
+    const bgSettingsList = await db.select().from(webSettings).where(eq(webSettings.settingKey, 'website_background'));
+    bgUrl = bgSettingsList[0]?.settingValue || "";
+  } catch (err) {
+    console.error("Failed to load background setting", err);
+  }
+
   return (
     <html lang="id" className="scroll-smooth">
       <head>
@@ -97,7 +109,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-white text-slate-900 min-h-screen flex flex-col">
+      <body 
+        className="antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col"
+        style={bgUrl ? {
+          backgroundImage: `url('${bgUrl}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        } : undefined}
+      >
         <Navbar />
         <main className="flex-1">
           <PageTransition>{children}</PageTransition>
