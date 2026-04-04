@@ -1,0 +1,32 @@
+{
+  "name": "profil-mh-as-saodah",
+  "description": "Website Profil Madrasah Ibtidaiyah Miftahul Huda As-Saodah",
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-04",
+  "stack": {
+    "frontend": "next.js-16",
+    "backend": "next.js-fullstack",
+    "database": "postgresql-neon",
+    "orm": "drizzle",
+    "auth": "auth.js-v5",
+    "realtime": null,
+    "mobile": null,
+    "media": "cloudinary"
+  },
+  "mode": "fullstack",
+  "platform": ["web"],
+  "multiTenant": false,
+  "scale": "small",
+  "team": "solo",
+  "hosting": {
+    "development": "local",
+    "staging": null,
+    "production": "vercel"
+  },
+  "infraBudget": "free-tier",
+  "activeRules": [
+    "nextjs-fullstack",
+    "postgresql",
+    "drizzle-orm"
+  ]
+}
