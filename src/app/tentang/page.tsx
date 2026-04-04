@@ -34,7 +34,13 @@ export default function TentangPage() {
             {/* Hero */}
             <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-28 overflow-hidden">
                 <div className="absolute inset-0">
-                    <Image src="/images/students-learning.png" alt="Tentang Kami" fill className="object-cover" priority />
+                    <Image 
+                        src={settings.banner_tentang ? storageUrl(settings.banner_tentang) : "/images/students-learning.png"} 
+                        alt="Tentang Kami" 
+                        fill 
+                        className="object-cover" 
+                        priority 
+                    />
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-950/85 to-emerald-900/70" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 text-center">

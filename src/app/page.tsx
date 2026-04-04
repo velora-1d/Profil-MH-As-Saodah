@@ -1,13 +1,14 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { BookOpen, Trophy, Users, GraduationCap, Star, Heart, Globe, Lightbulb, ChevronRight, ArrowRight, Clock } from 'lucide-react';
+import * as Icons from 'lucide-react';
+import { ChevronRight, ArrowRight, Clock, Star, GraduationCap } from 'lucide-react';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import SectionHeading from '@/components/SectionHeading';
-import { getHeroes, getFacilities, getPosts, getSettings, storageUrl, type WebHero, type WebFacility, type WebPost, type WebSetting } from '@/lib/api';
+import { getFacilities, getPosts, getSettings, getPrograms, getStats, storageUrl, type WebFacility, type WebPost, type WebProgram, type WebStat } from '@/lib/api';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -17,33 +18,18 @@ const fadeUp = {
   }),
 };
 
-const stats = [
-  { icon: BookOpen, label: 'Program Unggulan', value: 6, suffix: '+', color: 'from-emerald-500 to-teal-600' },
-  { icon: Trophy, label: 'Prestasi Diraih', value: 50, suffix: '+', color: 'from-amber-500 to-orange-600' },
-  { icon: Users, label: 'Siswa Aktif', value: 200, suffix: '+', color: 'from-blue-500 to-indigo-600' },
-  { icon: GraduationCap, label: 'Tahun Berdiri', value: 15, suffix: '+', color: 'from-rose-500 to-pink-600' },
-];
-
-const programs = [
-  { icon: BookOpen, title: 'Tahfidz Al-Quran', desc: 'Program unggulan hafalan Al-Quran dengan metode modern dan menyenangkan.', color: 'from-emerald-500 to-teal-600' },
-  { icon: Globe, title: 'Bilingual Program', desc: 'Pembelajaran dwibahasa untuk mempersiapkan generasi global.', color: 'from-blue-500 to-indigo-600' },
-  { icon: Lightbulb, title: 'Sains & Teknologi', desc: 'Eksplorasi sains dan teknologi untuk menumbuhkan daya pikir kritis.', color: 'from-amber-500 to-orange-600' },
-  { icon: Star, title: 'Pengembangan Karakter', desc: 'Pembentukan akhlak mulia melalui pembiasaan dan keteladanan.', color: 'from-rose-500 to-pink-600' },
-  { icon: Heart, title: 'Bimbingan Ibadah', desc: 'Pendampingan intensif dalam ibadah harian dan pemahaman fiqih.', color: 'from-purple-500 to-violet-600' },
-  { icon: Trophy, title: 'Olimpiade & Lomba', desc: 'Persiapan dan pembinaan untuk berbagai kompetisi akademik.', color: 'from-cyan-500 to-blue-600' },
-];
-
 export default function HomePage() {
-  const [heroes, setHeroes] = useState<WebHero[]>([]);
   const [facilities, setFacilities] = useState<WebFacility[]>([]);
   const [posts, setPosts] = useState<WebPost[]>([]);
   const [settings, setSettings] = useState<Record<string, string>>({});
-  const [heroIndex, setHeroIndex] = useState(0);
+  const [programs, setPrograms] = useState<WebProgram[]>([]);
+  const [stats, setStats] = useState<WebStat[]>([]);
 
   useEffect(() => {
-    getHeroes().then(data => setHeroes(Array.isArray(data) ? data : [])).catch(() => { });
     getFacilities().then(data => setFacilities(Array.isArray(data) ? data : [])).catch(() => { });
     getPosts(1, 3).then(r => setPosts(Array.isArray(r?.data) ? r.data : [])).catch(() => { });
+    getPrograms().then(data => setPrograms(Array.isArray(data) ? data : [])).catch(() => { });
+    getStats().then(data => setStats(Array.isArray(data) ? data : [])).catch(() => { });
     getSettings().then(data => {
       const flat: Record<string, string> = {};
       if (data && typeof data === 'object') {
@@ -55,19 +41,19 @@ export default function HomePage() {
     }).catch(() => { });
   }, []);
 
-  useEffect(() => {
-    if (heroes.length <= 1) return;
-    const timer = setInterval(() => setHeroIndex(p => (p + 1) % heroes.length), 5000);
-    return () => clearInterval(timer);
-  }, [heroes.length]);
-
   return (
     <div className="overflow-hidden">
       {/* ─── HERO ─── */}
       <section className="relative min-h-[90vh] flex items-center">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <Image src="/images/hero-madrasah.png" alt="MI MH As-Saodah" fill className="object-cover" priority />
+          <Image 
+            src={settings.banner_home ? storageUrl(settings.banner_home) : "/images/hero-madrasah.png"} 
+            alt="MI MH As-Saodah" 
+            fill 
+            className="object-cover" 
+            priority 
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-emerald-950/80 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-slate-950/30" />
         </div>
@@ -127,17 +113,20 @@ export default function HomePage() {
           transition={{ duration: 1, delay: 0.6 }}
           className="hidden xl:flex absolute right-12 top-1/2 -translate-y-1/2 flex-col gap-4 z-20"
         >
-          {stats.slice(0, 3).map((s, i) => (
-            <div key={i} className="flex items-center gap-3 bg-white/10 backdrop-blur-xl rounded-2xl px-5 py-3 ring-1 ring-white/10">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg`}>
-                <s.icon className="w-5 h-5 text-white" />
+          {stats.slice(0, 3).map((s, i) => {
+            const IconComponent = (Icons as unknown as Record<string, React.ElementType>)[s.icon_name] || Icons.Circle;
+            return (
+              <div key={i} className="flex items-center gap-3 bg-white/10 backdrop-blur-xl rounded-2xl px-5 py-3 ring-1 ring-white/10">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg`}>
+                  <IconComponent className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xl font-black text-white"><AnimatedCounter target={s.value} />{s.suffix}</p>
+                  <p className="text-xs text-slate-400 font-medium">{s.label}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xl font-black text-white"><AnimatedCounter target={s.value} />{s.suffix}</p>
-                <p className="text-xs text-slate-400 font-medium">{s.label}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </motion.div>
       </section>
 
@@ -145,21 +134,24 @@ export default function HomePage() {
       <section className="relative -mt-16 z-20">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((s, i) => (
-              <motion.div key={i} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="group relative bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/60 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden h-full"
-              >
-                {/* Decorative glow */}
-                <div className={`absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br ${s.color} opacity-10 blur-2xl group-hover:opacity-25 transition-opacity duration-500`} />
-                <div className="relative">
-                  <div className={`mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-                    <s.icon className="w-8 h-8 text-white" />
+            {stats.map((s, i) => {
+              const IconComponent = (Icons as unknown as Record<string, React.ElementType>)[s.icon_name] || Icons.Circle;
+              return (
+                <motion.div key={i} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                  className="group relative bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/60 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden h-full"
+                >
+                  {/* Decorative glow */}
+                  <div className={`absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br ${s.color} opacity-10 blur-2xl group-hover:opacity-25 transition-opacity duration-500`} />
+                  <div className="relative">
+                    <div className={`mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                      <IconComponent className="w-8 h-8 text-white" />
+                    </div>
+                    <p className="text-3xl font-black text-slate-900"><AnimatedCounter target={s.value} />{s.suffix}</p>
+                    <p className="text-sm font-semibold text-slate-500 mt-1">{s.label}</p>
                   </div>
-                  <p className="text-3xl font-black text-slate-900"><AnimatedCounter target={s.value} />{s.suffix}</p>
-                  <p className="text-sm font-semibold text-slate-500 mt-1">{s.label}</p>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -169,31 +161,34 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <SectionHeading badge="Program Kami" title="Program Unggulan" subtitle="Kurikulum terintegrasi yang menggabungkan ilmu agama dan umum untuk menghasilkan lulusan terbaik." />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {programs.map((p, i) => (
-              <motion.div key={p.title} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="group relative overflow-hidden h-full"
-              >
-                {/* Gradient border trick */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-400/20 via-transparent to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="relative bg-white rounded-3xl p-8 border border-slate-100 group-hover:border-transparent shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
-                  {/* Icon with glow */}
-                  <div className="relative mb-6">
-                    <div className={`absolute inset-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
-                    <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-                      <p.icon className="w-7 h-7 text-white" />
+            {programs.map((p, i) => {
+              const IconComponent = (Icons as unknown as Record<string, React.ElementType>)[p.icon_name] || Icons.Circle;
+              return (
+                <motion.div key={p.id || i} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                  className="group relative overflow-hidden h-full"
+                >
+                  {/* Gradient border trick */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-400/20 via-transparent to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="relative bg-white rounded-3xl p-8 border border-slate-100 group-hover:border-transparent shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
+                    {/* Icon with glow */}
+                    <div className="relative mb-6">
+                      <div className={`absolute inset-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
+                      <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                        <IconComponent className="w-7 h-7 text-white" />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors duration-300">{p.title}</h3>
+                    <p className="text-sm text-slate-500 leading-relaxed flex-1">{p.description}</p>
+                    {/* Corner decoration */}
+                    <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-emerald-50 to-transparent rounded-tl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* Arrow hint */}
+                    <div className="mt-auto pt-5 flex items-center gap-1 text-xs font-bold text-emerald-600 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                      Selengkapnya <ArrowRight className="w-3 h-3" />
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors duration-300">{p.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed flex-1">{p.desc}</p>
-                  {/* Corner decoration */}
-                  <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-emerald-50 to-transparent rounded-tl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  {/* Arrow hint */}
-                  <div className="mt-auto pt-5 flex items-center gap-1 text-xs font-bold text-emerald-600 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    Selengkapnya <ArrowRight className="w-3 h-3" />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -236,7 +231,12 @@ export default function HomePage() {
       {/* ─── CTA PPDB ─── */}
       <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/images/ppdb-registration.png" alt="PPDB" fill className="object-cover" />
+          <Image 
+            src={settings.banner_ppdb ? storageUrl(settings.banner_ppdb) : "/images/ppdb-registration.png"} 
+            alt="PPDB" 
+            fill 
+            className="object-cover" 
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-900/90 to-emerald-950/85" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-6 lg:px-8 text-center">

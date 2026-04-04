@@ -11,6 +11,23 @@ export interface WebSetting {
     [key: string]: string;
 }
 
+export interface WebProgram {
+    id: number;
+    title: string;
+    description: string;
+    icon_name: string;
+    color: string;
+}
+
+export interface WebStat {
+    id: number;
+    label: string;
+    value: number;
+    suffix: string;
+    icon_name: string;
+    color: string;
+}
+
 export interface WebHero {
     id: number;
     title: string;
@@ -109,6 +126,16 @@ export async function getPosts(page = 1, perPage = 9): Promise<{ data: WebPost[]
 
 export async function getPostBySlug(slug: string): Promise<WebPost> {
     const { data } = await api.get(`/web/posts/${slug}`);
+    return data?.data ?? data;
+}
+
+export async function getPrograms(): Promise<WebProgram[]> {
+    const { data } = await api.get('/web/programs');
+    return data?.data ?? data;
+}
+
+export async function getStats(): Promise<WebStat[]> {
+    const { data } = await api.get('/web/stats');
     return data?.data ?? data;
 }
 
