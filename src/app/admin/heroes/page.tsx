@@ -14,7 +14,13 @@ const fields = [
   { name: 'ctaText', label: 'Teks Tombol', placeholder: 'Daftar Sekarang' },
   { name: 'ctaUrl', label: 'URL Tombol', type: 'url' as const, placeholder: '/ppdb' },
   { name: 'order', label: 'Urutan', type: 'number' as const },
-  { name: 'isActive', label: 'Status Aktif', type: 'checkbox' as const },
+  {
+    name: 'status', label: 'Status', type: 'select' as const, required: true,
+    options: [
+      { label: 'Aktif', value: 'aktif' },
+      { label: 'Draft', value: 'draft' },
+    ],
+  },
 ];
 
 export default function HeroesPage() {
@@ -48,11 +54,11 @@ export default function HeroesPage() {
           { key: 'subtitle', label: 'Subtitle' },
           { key: 'order', label: 'Urutan' },
           {
-            key: 'isActive',
+            key: 'status',
             label: 'Status',
             render: (item) => (
-              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${item.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
-                {item.isActive ? 'Aktif' : 'Nonaktif'}
+              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${item.status === 'aktif' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                {item.status === 'aktif' ? 'Aktif' : 'Nonaktif'}
               </span>
             ),
           },

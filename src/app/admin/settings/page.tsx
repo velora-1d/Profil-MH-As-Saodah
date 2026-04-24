@@ -36,7 +36,7 @@ export default function SettingsPage() {
   useEffect(() => {
     getSettingsList().then((list) => {
       const map: Record<string, string> = {};
-      list.forEach((s) => { map[s.settingKey] = s.settingValue; });
+      list.forEach((s) => { map[s.key] = s.value; });
       setValues(map);
     });
   }, []);

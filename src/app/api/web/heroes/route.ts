@@ -6,7 +6,7 @@ import { asc, eq } from 'drizzle-orm';
 export async function GET() {
   try {
     const rows = await db.select().from(webHeroes)
-      .where(eq(webHeroes.isActive, true))
+      .where(eq(webHeroes.status, 'aktif'))
       .orderBy(asc(webHeroes.order));
 
     // Transformasi ke format snake_case yang diharapkan frontend

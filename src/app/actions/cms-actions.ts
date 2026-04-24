@@ -42,14 +42,14 @@ export async function createHero(data: {
     ctaText: data.ctaText || '',
     ctaUrl: data.ctaUrl || '',
     order: data.order || 0,
-    isActive: data.isActive ?? true,
+    status: data.isActive ? 'aktif' : 'draft',
   });
   revalidatePath('/admin/heroes');
   revalidatePath('/');
 }
 
 export async function updateHero(id: number, data: Partial<typeof webHeroes.$inferInsert>) {
-  await db.update(webHeroes).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(webHeroes.id, id));
+  await db.update(webHeroes).set({ ...data, updatedAt: new Date() }).where(eq(webHeroes.id, id));
   revalidatePath('/admin/heroes');
   revalidatePath('/');
 }
@@ -91,7 +91,7 @@ export async function createPost(data: {
     content: data.content,
     thumbnailUrl: data.thumbnailUrl || '',
     status: data.status || 'draft',
-    publishedAt: data.status === 'published' ? (data.publishedAt || new Date().toISOString()) : null,
+    publishedAt: data.status === 'published' ? (data.publishedAt ? new Date(data.publishedAt) : new Date()) : null,
     metaTitle: data.metaTitle || '',
     metaDescription: data.metaDescription || '',
   });
@@ -100,7 +100,7 @@ export async function createPost(data: {
 }
 
 export async function updatePost(id: number, data: Partial<typeof webPosts.$inferInsert>) {
-  await db.update(webPosts).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(webPosts.id, id));
+  await db.update(webPosts).set({ ...data, updatedAt: new Date() }).where(eq(webPosts.id, id));
   revalidatePath('/admin/posts');
   revalidatePath('/informasi');
 }
@@ -138,7 +138,7 @@ export async function createFacility(data: {
 }
 
 export async function updateFacility(id: number, data: Partial<typeof webFacilities.$inferInsert>) {
-  await db.update(webFacilities).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(webFacilities.id, id));
+  await db.update(webFacilities).set({ ...data, updatedAt: new Date() }).where(eq(webFacilities.id, id));
   revalidatePath('/admin/facilities');
   revalidatePath('/');
 }
@@ -178,7 +178,7 @@ export async function createAchievement(data: {
 }
 
 export async function updateAchievement(id: number, data: Partial<typeof webAchievements.$inferInsert>) {
-  await db.update(webAchievements).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(webAchievements.id, id));
+  await db.update(webAchievements).set({ ...data, updatedAt: new Date() }).where(eq(webAchievements.id, id));
   revalidatePath('/admin/achievements');
   revalidatePath('/prestasi');
 }
@@ -216,7 +216,7 @@ export async function createTeacher(data: {
 }
 
 export async function updateTeacher(id: number, data: Partial<typeof webTeachers.$inferInsert>) {
-  await db.update(webTeachers).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(webTeachers.id, id));
+  await db.update(webTeachers).set({ ...data, updatedAt: new Date() }).where(eq(webTeachers.id, id));
   revalidatePath('/admin/teachers');
   revalidatePath('/tentang');
 }
@@ -232,17 +232,17 @@ export async function deleteTeacher(id: number) {
 // ============================================================
 
 export async function getSettingsList() {
-  return db.select().from(webSettings).orderBy(asc(webSettings.settingGroup), asc(webSettings.settingKey));
+  return db.select().from(webSettings).orderBy(asc(webSettings.group), asc(webSettings.key));
 }
 
 export async function upsertSetting(key: string, value: string, group: string = 'general') {
-  const [existing] = await db.select().from(webSettings).where(eq(webSettings.settingKey, key)).limit(1);
+  const [existing] = await db.select().from(webSettings).where(eq(webSettings.key, key)).limit(1);
   if (existing) {
     await db.update(webSettings)
-      .set({ settingValue: value, settingGroup: group, updatedAt: new Date().toISOString() })
+      .set({ value: value, group: group, updatedAt: new Date() })
       .where(eq(webSettings.id, existing.id));
   } else {
-    await db.insert(webSettings).values({ settingKey: key, settingValue: value, settingGroup: group });
+    await db.insert(webSettings).values({ key: key, value: value, group: group });
   }
   revalidatePath('/admin/settings');
   revalidatePath('/');

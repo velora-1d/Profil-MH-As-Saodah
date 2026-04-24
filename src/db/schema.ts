@@ -27,12 +27,13 @@ export const adminUsers = pgTable('cms_admin_users', {
 // ============================================================
 
 export const webSettings = pgTable('cms_web_settings', {
-  id: serial().primaryKey(),
-  settingKey: text('setting_key').notNull().unique(),
-  settingValue: text('setting_value').default('').notNull(),
-  settingGroup: text('setting_group').default('general').notNull(),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  id: serial('id').primaryKey(),
+  key: text('key').notNull().unique(),
+  value: text('value').notNull(),
+  group: text('group').notNull().default('umum'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 // ============================================================
@@ -40,17 +41,18 @@ export const webSettings = pgTable('cms_web_settings', {
 // ============================================================
 
 export const webHeroes = pgTable('cms_web_heroes', {
-  id: serial().primaryKey(),
-  title: text().notNull(),
-  subtitle: text().default(''),
-  mediaType: text('media_type').default('image').notNull(),
-  mediaUrl: text('media_url').default('').notNull(),
-  ctaText: text('cta_text').default(''),
-  ctaUrl: text('cta_url').default(''),
-  order: integer().default(0).notNull(),
-  isActive: boolean('is_active').default(true).notNull(),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  subtitle: text('subtitle'),
+  mediaType: text('media_type').notNull().default('image'),
+  mediaUrl: text('media_url').notNull(),
+  ctaText: text('cta_text'),
+  ctaUrl: text('cta_url'),
+  order: integer('order').notNull().default(0),
+  status: text('status').notNull().default('aktif'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 // ============================================================
@@ -58,14 +60,15 @@ export const webHeroes = pgTable('cms_web_heroes', {
 // ============================================================
 
 export const webFacilities = pgTable('cms_web_facilities', {
-  id: serial().primaryKey(),
-  name: text().notNull(),
-  description: text().default(''),
-  imageUrl: text('image_url').default(''),
-  iconSvg: text('icon_svg').default(''),
-  order: integer().default(0).notNull(),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  imageUrl: text('image_url'),
+  iconSvg: text('icon_svg'),
+  order: integer('order').notNull().default(0),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 // ============================================================
@@ -73,18 +76,19 @@ export const webFacilities = pgTable('cms_web_facilities', {
 // ============================================================
 
 export const webAchievements = pgTable('cms_web_achievements', {
-  id: serial().primaryKey(),
-  title: text().notNull(),
-  studentName: text('student_name').default(''),
-  competitionName: text('competition_name').default(''),
-  level: text().default('kecamatan').notNull(),
-  year: integer().default(2025).notNull(),
-  imageUrl: text('image_url').default(''),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
-}, (table) => [
-  index('cms_achievements_level_idx').on(table.level),
-  index('cms_achievements_year_idx').on(table.year),
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  studentName: text('student_name'),
+  competitionName: text('competition_name'),
+  level: text('level').notNull().default('kabupaten'),
+  year: integer('year').notNull(),
+  imageUrl: text('image_url'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (t) => [
+  index('web_achievements_level_idx').on(t.level),
+  index('web_achievements_year_idx').on(t.year),
 ]);
 
 // ============================================================
@@ -92,23 +96,23 @@ export const webAchievements = pgTable('cms_web_achievements', {
 // ============================================================
 
 export const webPosts = pgTable('cms_web_posts', {
-  id: serial().primaryKey(),
-  title: text().notNull(),
-  slug: text().notNull().unique(),
-  excerpt: text().default(''),
-  content: text().default('').notNull(),
-  thumbnailUrl: text('thumbnail_url').default(''),
-  status: text().default('draft').notNull(),
-  publishedAt: timestamp('published_at', { mode: 'string' }),
-  authorId: integer('author_id'),
-  metaTitle: text('meta_title').default(''),
-  metaDescription: text('meta_description').default(''),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
-}, (table) => [
-  index('cms_posts_slug_idx').on(table.slug),
-  index('cms_posts_status_idx').on(table.status),
-  index('cms_posts_published_idx').on(table.publishedAt),
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  excerpt: text('excerpt'),
+  content: text('content').notNull(),
+  thumbnailUrl: text('thumbnail_url'),
+  category: text('category').notNull().default('berita'),
+  status: text('status').notNull().default('draft'),
+  publishedAt: timestamp('published_at'),
+  metaTitle: text('meta_title'),
+  metaDescription: text('meta_description'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (t) => [
+  index('web_posts_slug_idx').on(t.slug),
+  index('web_posts_status_idx').on(t.status),
 ]);
 
 // ============================================================
@@ -116,14 +120,43 @@ export const webPosts = pgTable('cms_web_posts', {
 // ============================================================
 
 export const webTeachers = pgTable('cms_web_teachers', {
-  id: serial().primaryKey(),
-  name: text().notNull(),
-  position: text().default(''),
-  bio: text().default(''),
-  photoUrl: text('photo_url').default(''),
-  order: integer().default(0).notNull(),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  position: text('position'),
+  bio: text('bio'),
+  photoUrl: text('photo_url'),
+  order: integer('order').notNull().default(0),
+  status: text('status').notNull().default('aktif'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const webPrograms = pgTable('cms_web_programs', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  iconName: text('icon_name').notNull().default('BookOpen'),
+  color: text('color').notNull().default('from-emerald-500 to-teal-600'),
+  order: integer('order').notNull().default(0),
+  status: text('status').notNull().default('aktif'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const webStats = pgTable('cms_web_stats', {
+  id: serial('id').primaryKey(),
+  label: text('label').notNull(),
+  value: integer('value').notNull().default(0),
+  suffix: text('suffix').notNull().default('+'),
+  iconName: text('icon_name').notNull().default('Trophy'),
+  color: text('color').notNull().default('from-amber-500 to-orange-600'),
+  order: integer('order').notNull().default(0),
+  status: text('status').notNull().default('aktif'),
+  unitId: text('unit_id').notNull().default(''),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 // ============================================================

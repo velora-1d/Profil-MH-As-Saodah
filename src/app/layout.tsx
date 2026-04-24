@@ -93,8 +93,8 @@ export default async function RootLayout({
 }>) {
   let bgUrl = "";
   try {
-    const bgSettingsList = await db.select().from(webSettings).where(eq(webSettings.settingKey, 'website_background'));
-    bgUrl = bgSettingsList[0]?.settingValue || "";
+    const bgSettingsList = await db.select().from(webSettings).where(eq(webSettings.key, 'website_background'));
+    bgUrl = bgSettingsList[0]?.value || "";
   } catch (err) {
     console.error("Failed to load background setting", err);
   }
