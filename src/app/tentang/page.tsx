@@ -18,15 +18,34 @@ export default function TentangPage() {
     const [facilities, setFacilities] = useState<WebFacility[]>([]);
 
     useEffect(() => {
+        // Fetch Settings
         getSettings().then(data => {
-            const flat: Record<string, string> = {};
             if (data && typeof data === 'object') {
-                Object.values(data).forEach((g: Record<string, string>) => { if (typeof g === 'object') Object.assign(flat, g); });
+                // If data comes in grouped format (e.g., { general: {...}, banners: {...} })
+                const flat: Record<string, string> = {};
+                Object.values(data).forEach((group: any) => {
+                    if (group && typeof group === 'object') {
+                        Object.assign(flat, group);
+                    }
+                });
+                // If data is already flat
+                if (Object.keys(flat).length === 0) {
+                    Object.assign(flat, data);
+                }
+                setSettings(flat);
             }
-            setSettings(flat);
-        }).catch(() => { });
-        getTeachers().then(data => setTeachers(Array.isArray(data) ? data : [])).catch(() => { });
-        getFacilities().then(data => setFacilities(Array.isArray(data) ? data : [])).catch(() => { });
+        }).catch(err => console.error('Settings fetch error:', err));
+
+        // Fetch Teachers
+        getTeachers().then(data => {
+            console.log('Teachers data received:', data);
+            setTeachers(Array.isArray(data) ? data : []);
+        }).catch(err => console.error('Teachers fetch error:', err));
+
+        // Fetch Facilities
+        getFacilities().then(data => {
+            setFacilities(Array.isArray(data) ? data : []);
+        }).catch(err => console.error('Facilities fetch error:', err));
     }, []);
 
     return (
