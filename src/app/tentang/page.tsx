@@ -38,8 +38,12 @@ export default function TentangPage() {
 
         // Fetch Teachers
         getTeachers().then(data => {
-            console.log('Teachers data received:', data);
-            setTeachers(Array.isArray(data) ? data : []);
+            console.log('DEBUG: Full API response for teachers:', data);
+            if (data && (data as any).data) {
+                setTeachers((data as any).data);
+            } else {
+                setTeachers(Array.isArray(data) ? data : []);
+            }
         }).catch(err => console.error('Teachers fetch error:', err));
 
         // Fetch Facilities
