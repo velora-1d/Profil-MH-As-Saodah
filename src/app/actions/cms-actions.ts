@@ -8,8 +8,6 @@ import {
   webAchievements,
   webTeachers,
   webSettings,
-  webPrograms,
-  webStats,
   ppdbSettings,
   ppdbRegistrations,
   adminUsers,
@@ -17,7 +15,6 @@ import {
 } from '@/db/schema';
 import { eq, desc, asc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-
 
 // ============================================================
 // HERO SLIDES
@@ -321,86 +318,3 @@ export async function seedAdmin() {
   }
   return { success: true, message: 'Admin user sudah ada' };
 }
-
-// ============================================================
-// PROGRAMS / PROGRAM UNGGULAN
-// ============================================================
-
-export async function getProgramsList() {
-  return db.select().from(webPrograms).orderBy(asc(webPrograms.order));
-}
-
-export async function createProgram(data: {
-  title: string;
-  description: string;
-  iconName?: string;
-  color?: string;
-  order?: number;
-  status?: string;
-}) {
-  await db.insert(webPrograms).values({
-    title: data.title,
-    description: data.description,
-    iconName: data.iconName || 'BookOpen',
-    color: data.color || 'from-emerald-500 to-teal-600',
-    order: data.order || 0,
-    status: data.status || 'aktif',
-  });
-  revalidatePath('/admin/programs');
-  revalidatePath('/');
-}
-
-export async function updateProgram(id: number, data: Partial<typeof webPrograms.$inferInsert>) {
-  await db.update(webPrograms).set({ ...data, updatedAt: new Date() }).where(eq(webPrograms.id, id));
-  revalidatePath('/admin/programs');
-  revalidatePath('/');
-}
-
-export async function deleteProgram(id: number) {
-  await db.delete(webPrograms).where(eq(webPrograms.id, id));
-  revalidatePath('/admin/programs');
-  revalidatePath('/');
-}
-
-// ============================================================
-// STATS / STATISTIK SEKOLAH
-// ============================================================
-
-export async function getStatsList() {
-  return db.select().from(webStats).orderBy(asc(webStats.order));
-}
-
-export async function createStat(data: {
-  label: string;
-  value: number;
-  suffix?: string;
-  iconName?: string;
-  color?: string;
-  order?: number;
-  status?: string;
-}) {
-  await db.insert(webStats).values({
-    label: data.label,
-    value: data.value,
-    suffix: data.suffix || '+',
-    iconName: data.iconName || 'Trophy',
-    color: data.color || 'from-amber-500 to-orange-600',
-    order: data.order || 0,
-    status: data.status || 'aktif',
-  });
-  revalidatePath('/admin/stats');
-  revalidatePath('/');
-}
-
-export async function updateStat(id: number, data: Partial<typeof webStats.$inferInsert>) {
-  await db.update(webStats).set({ ...data, updatedAt: new Date() }).where(eq(webStats.id, id));
-  revalidatePath('/admin/stats');
-  revalidatePath('/');
-}
-
-export async function deleteStat(id: number) {
-  await db.delete(webStats).where(eq(webStats.id, id));
-  revalidatePath('/admin/stats');
-  revalidatePath('/');
-}
-

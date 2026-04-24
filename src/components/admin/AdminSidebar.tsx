@@ -17,16 +17,12 @@ import {
   Menu,
   X,
   ChevronRight,
-  BookMarked,
-  BarChart3,
 } from 'lucide-react';
 
 const menuItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Hero Slides', href: '/admin/heroes', icon: Image },
   { label: 'Berita', href: '/admin/posts', icon: Newspaper },
-  { label: 'Program Unggulan', href: '/admin/programs', icon: BookMarked },
-  { label: 'Statistik', href: '/admin/stats', icon: BarChart3 },
   { label: 'Fasilitas', href: '/admin/facilities', icon: Building2 },
   { label: 'Prestasi', href: '/admin/achievements', icon: Trophy },
   { label: 'Guru', href: '/admin/teachers', icon: Users },
