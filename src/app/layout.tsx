@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
+import BackgroundWrapper from "@/components/BackgroundWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://mh-assaodah.sch.id"),
@@ -82,23 +83,11 @@ const jsonLd = {
   sameAs: [],
 };
 
-import { db } from "@/db";
-import { webSettings } from "@/db/schema";
-import { eq } from "drizzle-orm";
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let bgUrl = "";
-  try {
-    const bgSettingsList = await db.select().from(webSettings).where(eq(webSettings.key, 'website_background'));
-    bgUrl = bgSettingsList[0]?.value || "";
-  } catch (err) {
-    console.error("Failed to load background setting", err);
-  }
-
   return (
     <html lang="id" className="scroll-smooth">
       <head>
@@ -109,22 +98,15 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body 
-        className="antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col"
-        style={bgUrl ? {
-          backgroundImage: `url('${bgUrl}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-        } : undefined}
-      >
+      {/* BackgroundWrapper = client component, fetch background via API — bukan langsung ke DB */}
+      <BackgroundWrapper>
         <Navbar />
         <main className="flex-1">
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />
         <Analytics />
-      </body>
+      </BackgroundWrapper>
     </html>
   );
 }

@@ -3,6 +3,10 @@ import { auth } from '@/lib/auth';
 import { SessionProvider } from 'next-auth/react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 
+// Paksa semua halaman admin jadi dynamic — cegah SSG saat build di Vercel
+// (Vercel tidak bisa konek ke PostgreSQL VPS saat build time)
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: {
     default: 'CMS Dashboard — MI MH As-Saodah',
