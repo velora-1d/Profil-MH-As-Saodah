@@ -23,7 +23,7 @@ export default function TentangPage() {
             if (data && typeof data === 'object') {
                 // If data comes in grouped format (e.g., { general: {...}, banners: {...} })
                 const flat: Record<string, string> = {};
-                Object.values(data).forEach((group: any) => {
+                Object.values(data).forEach((group) => {
                     if (group && typeof group === 'object') {
                         Object.assign(flat, group);
                     }
