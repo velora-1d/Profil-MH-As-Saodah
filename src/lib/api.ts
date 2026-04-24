@@ -87,6 +87,8 @@ export interface PpdbInfo {
     fee: string;
     start_date: string;
     end_date: string;
+    banner_url: string;
+    whatsapp: string;
 }
 
 // ============ FETCHERS ============

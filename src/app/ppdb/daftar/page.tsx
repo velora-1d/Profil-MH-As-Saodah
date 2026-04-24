@@ -113,7 +113,7 @@ export default function PpdbDaftarPage() {
         setSubmitting(true);
         setErrors({});
         try {
-            const payload = { ...form, entity_id: 1, unit_id: 1 };
+            const payload = { ...form, entity_id: 1, unit_id: 1, registration_source: 'web_profil' };
             const res = await submitPpdbRegistration(payload);
             setResult({ success: true, regNumber: res?.data?.registration_number });
         } catch (err: unknown) {

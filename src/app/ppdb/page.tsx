@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { GraduationCap, CheckCircle, Users, Calendar, CreditCard, ClipboardList, FileText, Upload, ShieldCheck, PartyPopper, ExternalLink, MessageCircle } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
-import { getPpdbInfo, type PpdbInfo } from '@/lib/api';
+import { getPpdbInfo, storageUrl, type PpdbInfo } from '@/lib/api';
 
 const steps = [
     { num: 1, icon: ClipboardList, title: 'Ambil Formulir', desc: 'Unduh dan isi formulir pendaftaran online melalui website.', color: 'from-emerald-500 to-teal-600' },
@@ -28,7 +28,13 @@ export default function PpdbPage() {
             {/* Hero */}
             <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-28">
                 <div className="absolute inset-0">
-                    <Image src="/images/ppdb-registration.png" alt="PPDB" fill className="object-cover" priority />
+                    <Image 
+                        src={info?.banner_url ? storageUrl(info.banner_url) : "/images/ppdb-registration.png"} 
+                        alt="PPDB" 
+                        fill 
+                        className="object-cover" 
+                        priority 
+                    />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-emerald-950/85 to-slate-950/70" />
                 </div>
                 <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 text-center">
@@ -116,12 +122,14 @@ export default function PpdbPage() {
                             <p className="text-xl font-bold text-slate-900 mb-2">Siap mendaftarkan putra-putri Anda?</p>
                             <p className="text-sm text-slate-500 max-w-md mx-auto mb-8">Formulir pendaftaran online tersedia melalui portal dashboard. Silakan klik tombol di bawah untuk mulai mengisi data.</p>
                             <div className="flex flex-wrap justify-center gap-3">
-                                <Link href="/ppdb/daftar"
-                                    className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all">
-                                    Daftar Online Sekarang
-                                    <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                                </Link>
-                                <a href="https://wa.me/62xxxxxxxxxx" target="_blank" rel="noopener noreferrer"
+                                {info?.is_open && (
+                                    <Link href="/ppdb/daftar"
+                                        className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all">
+                                        Daftar Online Sekarang
+                                        <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                                    </Link>
+                                )}
+                                <a href={`https://wa.me/${info?.whatsapp || '628xxxxxxxxxx'}`} target="_blank" rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-bold text-slate-700 border-2 border-slate-200 hover:border-emerald-300 transition-all">
                                     <MessageCircle className="w-4 h-4" />
                                     Hubungi via WhatsApp

@@ -31,11 +31,18 @@ export default function HomePage() {
     getPrograms().then(data => setPrograms(Array.isArray(data) ? data : [])).catch(() => { });
     getStats().then(data => setStats(Array.isArray(data) ? data : [])).catch(() => { });
     getSettings().then(data => {
-      const flat: Record<string, string> = {};
+      let flat: Record<string, string> = {};
       if (data && typeof data === 'object') {
-        Object.values(data).forEach((group: Record<string, string>) => {
-          if (typeof group === 'object') Object.assign(flat, group);
-        });
+        // If it's already flat (values are strings), use it directly
+        // If it's grouped (values are objects), flatten it
+        const firstValue = Object.values(data)[0];
+        if (typeof firstValue === 'object' && firstValue !== null && !Array.isArray(firstValue)) {
+          Object.values(data).forEach((group: unknown) => {
+            if (typeof group === 'object' && group !== null) Object.assign(flat, group);
+          });
+        } else {
+          flat = data as unknown as Record<string, string>;
+        }
       }
       setSettings(flat);
     }).catch(() => { });
@@ -256,7 +263,8 @@ export default function HomePage() {
                 Daftar Sekarang
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href="https://wa.me/62xxxxxxxxxx" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md px-8 py-4 text-base font-bold text-white ring-1 ring-white/20 hover:bg-white/20 transition-all duration-300">
+              <a href={`https://wa.me/${settings.ppdb_whatsapp || '628xxxxxxxxxx'}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md px-8 py-4 text-base font-bold text-white ring-1 ring-white/20 hover:bg-white/20 transition-all duration-300">
+                <Icons.MessageCircle className="w-4 h-4" />
                 Hubungi via WhatsApp
               </a>
             </div>

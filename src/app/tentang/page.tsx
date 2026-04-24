@@ -56,6 +56,50 @@ export default function TentangPage() {
                 </div>
             </section>
 
+            {/* Sejarah */}
+            <section className="py-24 bg-white relative overflow-hidden">
+                {/* Decorative background */}
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-50/50 -skew-x-12 translate-x-1/2" />
+                
+                <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+                            <SectionHeading badge="Sejarah Singkat" title="Jejak Langkah Kami" align="left" />
+                            <div className="mt-8 space-y-6 text-slate-600 leading-relaxed">
+                                {settings.school_history ? (
+                                    settings.school_history.split('\n').map((para, i) => (
+                                        <p key={i}>{para}</p>
+                                    ))
+                                ) : (
+                                    <>
+                                        <p>MI MH As-Saodah didirikan dengan semangat untuk memberikan pendidikan Islam yang berkualitas bagi masyarakat sekitar. Berawal dari keinginan luhur para pendiri untuk mencetak generasi yang tidak hanya cerdas secara intelektual, tetapi juga memiliki kedalaman akhlak.</p>
+                                        <p>Seiring berjalannya waktu, sekolah kami terus berkembang dan berinovasi dalam metode pembelajaran, sarana prasarana, serta kualitas tenaga pendidik, namun tetap mempertahankan nilai-nilai luhur keislaman sebagai pondasi utama.</p>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9 }} 
+                            whileInView={{ opacity: 1, scale: 1 }} 
+                            viewport={{ once: true }} 
+                            transition={{ duration: 0.8 }}
+                            className="relative aspect-square lg:aspect-auto lg:h-[500px] rounded-[3rem] overflow-hidden shadow-2xl"
+                        >
+                            <Image 
+                                src="/images/school-history.png" 
+                                alt="Sejarah Sekolah" 
+                                fill 
+                                className="object-cover" 
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+                            <div className="absolute bottom-8 left-8 right-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                                <p className="text-white font-bold italic">&quot;Mendidik dengan hati, membangun masa depan dengan ilmu.&quot;</p>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
             {/* Visi Misi */}
             <section className="py-24 bg-gradient-to-b from-white via-emerald-50/20 to-white">
                 <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -122,7 +166,7 @@ export default function TentangPage() {
                                             <div className="absolute inset-0 w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
                                             <div className="relative mx-auto w-20 h-20 rounded-full overflow-hidden ring-3 ring-emerald-100 group-hover:ring-emerald-300 shadow-md transition-all duration-500 group-hover:scale-105">
                                                 {t.photo_url ? (
-                                                    <img src={storageUrl(t.photo_url)} alt={t.name} className="w-full h-full object-cover" />
+                                                    <Image src={storageUrl(t.photo_url)} alt={t.name} fill className="object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
                                                         <span className="text-2xl font-black text-emerald-600">{t.name.charAt(0)}</span>
@@ -150,7 +194,7 @@ export default function TentangPage() {
                                 <motion.div key={f.id} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="group rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                                     <div className="aspect-video overflow-hidden relative">
                                         {f.image_url ? (
-                                            <img src={storageUrl(f.image_url)} alt={f.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <Image src={storageUrl(f.image_url)} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
                                             <Image src="/images/school-facilities.png" alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                                         )}
@@ -231,7 +275,7 @@ export default function TentangPage() {
                                 
                                 <form className="space-y-4" action={async (formData) => {
                                     const { submitContactMessage } = await import('@/app/actions/cms-actions');
-                                    const res = await submitContactMessage({
+                                    await submitContactMessage({
                                         name: formData.get('name') as string,
                                         email: formData.get('email') as string,
                                         subject: formData.get('subject') as string,
