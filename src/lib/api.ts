@@ -152,7 +152,7 @@ export async function getPpdbInfo(): Promise<PpdbInfo> {
 }
 
 export async function submitPpdbRegistration(formData: Record<string, unknown>) {
-    const { data } = await api.post('/ppdb/register', formData);
+    const { data } = await api.post('/ppdb', formData);
     return data;
 }
 
@@ -160,7 +160,7 @@ export async function uploadAttachment(file: File, type: string) {
     const fd = new FormData();
     fd.append('file', file);
     fd.append('type', type);
-    const { data } = await api.post('/web/ppdb/upload-attachment', fd, {
+    const { data } = await api.post('/upload', fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data;
