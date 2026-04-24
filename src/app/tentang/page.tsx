@@ -39,8 +39,9 @@ export default function TentangPage() {
         // Fetch Teachers
         getTeachers().then(data => {
             console.log('DEBUG: Full API response for teachers:', data);
-            if (data && (data as any).data) {
-                setTeachers((data as any).data);
+            if (data && typeof data === 'object' && 'data' in data) {
+                const response = data as { data: WebTeacher[] };
+                setTeachers(response.data);
             } else {
                 setTeachers(Array.isArray(data) ? data : []);
             }
