@@ -165,8 +165,8 @@ export default function TentangPage() {
                                         <div className="mx-auto mb-4 relative">
                                             <div className="absolute inset-0 w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
                                             <div className="relative mx-auto w-20 h-20 rounded-full overflow-hidden ring-3 ring-emerald-100 group-hover:ring-emerald-300 shadow-md transition-all duration-500 group-hover:scale-105">
-                                                {t.photo_url ? (
-                                                    <Image src={storageUrl(t.photo_url)} alt={t.name} fill className="object-cover" />
+                                                {t.photoUrl ? (
+                                                    <Image src={storageUrl(t.photoUrl)} alt={t.name} fill className="object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
                                                         <span className="text-2xl font-black text-emerald-600">{t.name.charAt(0)}</span>

@@ -76,7 +76,7 @@ export interface WebTeacher {
     name: string;
     position: string | null;
     bio: string | null;
-    photo_url: string | null;
+    photoUrl: string | null;
 }
 
 export interface PpdbInfo {
