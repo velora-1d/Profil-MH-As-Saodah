@@ -6,6 +6,11 @@ import Image from 'next/image';
 import { Target, ClipboardList, BookOpen, Heart } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 import { getSettings, getTeachers, getFacilities, storageUrl, type WebTeacher, type WebFacility } from '@/lib/api';
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 30 },
@@ -180,28 +185,88 @@ export default function TentangPage() {
             {teachers.length > 0 && (
                 <section id="guru" className="py-24 bg-slate-50">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        <SectionHeading badge="Tenaga Pendidik" title="Guru Berdedikasi Kami" subtitle="Para pendidik berpengalaman yang siap membimbing putra-putri Anda." />
+                        <SectionHeading badge="Tenaga Pendidik" title="Guru Berdedikasi Kami" subtitle="Para pendidik berpengalaman yang siap membimbing putra-putri Anda. Klik foto untuk melihat profil lengkap." />
+                        
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                             {teachers.map((t, i) => (
-                                <motion.div key={t.id} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="group relative overflow-hidden rounded-3xl h-full">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 via-transparent to-amber-400/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <div className="relative bg-white rounded-3xl p-5 text-center border border-slate-100 group-hover:border-transparent shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 h-full">
-                                        <div className="mx-auto mb-4 relative">
-                                            <div className="absolute inset-0 w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
-                                            <div className="relative mx-auto w-20 h-20 rounded-full overflow-hidden ring-3 ring-emerald-100 group-hover:ring-emerald-300 shadow-md transition-all duration-500 group-hover:scale-105">
-                                                {t.photoUrl ? (
-                                                    <Image src={storageUrl(t.photoUrl)} alt={t.name} fill className="object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
-                                                        <span className="text-2xl font-black text-emerald-600">{t.name.charAt(0)}</span>
+                                <Dialog key={t.id}>
+                                    <DialogTrigger asChild>
+                                        <motion.div custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="group cursor-pointer relative overflow-hidden rounded-3xl h-full">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 via-transparent to-amber-400/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                            <div className="relative bg-white rounded-3xl p-5 text-center border border-slate-100 group-hover:border-transparent shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col items-center">
+                                                <div className="mb-4 relative">
+                                                    <div className="absolute inset-0 w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
+                                                    <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden ring-4 ring-emerald-50 group-hover:ring-emerald-200 shadow-md transition-all duration-500 group-hover:scale-105">
+                                                        {t.photoUrl ? (
+                                                            <Image src={storageUrl(t.photoUrl)} alt={t.name} fill className="object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
+                                                                <span className="text-3xl font-black text-emerald-600/30">{t.name.charAt(0)}</span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
+                                                    
+                                                    {/* Badge for Bio indicator */}
+                                                    {t.bio && (
+                                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white scale-0 group-hover:scale-100 transition-transform duration-300">
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <h4 className="font-bold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors duration-300 leading-tight mb-1">{t.name}</h4>
+                                                <p className="text-xs font-semibold text-emerald-600 px-3 py-1 bg-emerald-50 rounded-full inline-block">{t.position || 'Guru'}</p>
+                                            </div>
+                                        </motion.div>
+                                    </DialogTrigger>
+
+                                    <DialogContent className="sm:max-w-md overflow-hidden p-0 border-none">
+                                        <div className="relative">
+                                            {/* Header Background */}
+                                            <div className="h-32 bg-gradient-to-br from-emerald-600 to-teal-700" />
+                                            
+                                            <div className="px-8 pb-8 pt-0 -mt-16 relative">
+                                                <div className="relative mb-6">
+                                                    <div className="w-32 h-32 rounded-[2.5rem] overflow-hidden ring-8 ring-white shadow-2xl bg-white mx-auto sm:mx-0">
+                                                        {t.photoUrl ? (
+                                                            <Image src={storageUrl(t.photoUrl)} alt={t.name} fill className="object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                                                                <span className="text-5xl font-black text-slate-300">{t.name.charAt(0)}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="text-center sm:text-left">
+                                                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">{t.name}</h3>
+                                                    <p className="text-emerald-600 font-bold flex items-center justify-center sm:justify-start gap-2 mt-1">
+                                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                        {t.position || 'Tenaga Pendidik'}
+                                                    </p>
+                                                    
+                                                    <div className="mt-8">
+                                                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                            <span className="w-8 h-px bg-slate-200" />
+                                                            Biografi
+                                                            <span className="w-full h-px bg-slate-200" />
+                                                        </h4>
+                                                        <div className="text-slate-600 leading-relaxed italic text-sm">
+                                                            {t.bio ? (
+                                                                <p className="whitespace-pre-line">&quot;{t.bio}&quot;</p>
+                                                            ) : (
+                                                                <p className="text-slate-400">&quot;Belum ada informasi biografi untuk pendidik ini.&quot;</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-8 pt-6 border-t border-slate-100">
+                                                        <p className="text-[10px] text-slate-400 font-medium">MI MH As-Saodah — Dedikasi untuk Pendidikan Islam</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <h4 className="font-bold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors duration-300">{t.name}</h4>
-                                        <p className="text-xs font-semibold text-emerald-600 mt-0.5">{t.position || 'Guru'}</p>
-                                    </div>
-                                </motion.div>
+                                    </DialogContent>
+                                </Dialog>
                             ))}
                         </div>
                     </div>
