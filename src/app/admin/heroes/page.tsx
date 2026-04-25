@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import CrudTable from '@/components/admin/CrudTable';
 import CrudFormModal from '@/components/admin/CrudFormModal';
 import { getHeroesList, createHero, updateHero, deleteHero } from '@/app/actions/cms-actions';
@@ -27,12 +27,17 @@ export default function HeroesPage() {
   const [data, setData] = useState<Hero[]>([]);
   const [modal, setModal] = useState<{ mode: 'create' | 'edit'; item?: Hero } | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const result = await getHeroesList();
     setData(result);
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const init = async () => {
+      await load();
+    };
+    init();
+  }, [load]);
 
   const handleSubmit = async (formData: Record<string, unknown>) => {
     if (modal?.mode === 'edit' && modal.item) {
