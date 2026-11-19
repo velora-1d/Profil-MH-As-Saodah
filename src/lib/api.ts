@@ -97,7 +97,7 @@ const STORAGE_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/storage')
 
 export function storageUrl(path: string | null): string {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
+    if (path.startsWith('http') || path.startsWith('/')) return path;
     return `${STORAGE_URL}/${path}`;
 }
 

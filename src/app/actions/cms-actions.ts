@@ -246,6 +246,9 @@ export async function upsertSetting(key: string, value: string, group: string = 
   }
   revalidatePath('/admin/settings');
   revalidatePath('/');
+  revalidatePath('/tentang');
+  revalidatePath('/prestasi');
+  revalidatePath('/informasi');
 }
 
 // ============================================================

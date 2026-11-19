@@ -70,7 +70,7 @@ export default function HomePage() {
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
               <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 backdrop-blur-md px-5 py-2 text-sm font-bold text-emerald-300 ring-1 ring-inset ring-emerald-400/30 mb-8">
                 <Star className="w-4 h-4" />
-                Madrasah Ibtidaiyah Unggulan
+                {settings.home_hero_badge || 'Madrasah Ibtidaiyah Unggulan'}
               </span>
             </motion.div>
 
@@ -80,11 +80,17 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
               className="text-5xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight"
             >
-              Membangun Generasi{' '}
-              <span className="bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                Qur&apos;ani
-              </span>{' '}
-              &amp; Berwawasan Global
+              {settings.home_hero_title ? (
+                settings.home_hero_title
+              ) : (
+                <>
+                  Membangun Generasi{' '}
+                  <span className="bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
+                    Qur&apos;ani
+                  </span>{' '}
+                  &amp; Berwawasan Global
+                </>
+              )}
             </motion.h1>
 
             <motion.p
@@ -93,7 +99,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
               className="mt-8 text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl"
             >
-              {settings.school_tagline || 'Mencetak generasi berilmu, berakhlak mulia, dan siap menghadapi tantangan masa depan dengan landasan Al-Quran dan Sunnah.'}
+              {settings.home_hero_subtitle || settings.school_tagline || 'Mencetak generasi berilmu, berakhlak mulia, dan siap menghadapi tantangan masa depan dengan landasan Al-Quran dan Sunnah.'}
             </motion.p>
 
             <motion.div
@@ -253,17 +259,23 @@ export default function HomePage() {
               Penerimaan Peserta Didik Baru
             </span>
             <h2 className="text-4xl lg:text-5xl font-black text-white leading-tight">
-              Wujudkan Masa Depan <span className="bg-gradient-to-r from-amber-300 to-yellow-300 bg-clip-text text-transparent">Cerah</span> Putra-Putri Anda
+              {settings.ppdb_cta_title ? (
+                settings.ppdb_cta_title
+              ) : (
+                <>
+                  Wujudkan Masa Depan <span className="bg-gradient-to-r from-amber-300 to-yellow-300 bg-clip-text text-transparent">Cerah</span> Putra-Putri Anda
+                </>
+              )}
             </h2>
             <p className="mt-6 text-lg text-emerald-100/70 max-w-2xl mx-auto">
-              Daftarkan sekarang dan bergabung bersama keluarga besar MI MH As-Saodah. Kuota terbatas!
+              {settings.ppdb_cta_subtitle || 'Daftarkan sekarang dan bergabung bersama keluarga besar MI MH As-Saodah. Kuota terbatas!'}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link href="/ppdb/daftar" className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 px-8 py-4 text-base font-bold text-slate-900 shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-300 hover:-translate-y-0.5">
                 Daftar Sekarang
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href={`https://wa.me/${settings.ppdb_whatsapp || '628xxxxxxxxxx'}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md px-8 py-4 text-base font-bold text-white ring-1 ring-white/20 hover:bg-white/20 transition-all duration-300">
+              <a href={`https://wa.me/${settings.social_whatsapp || settings.ppdb_whatsapp || '628xxxxxxxxxx'}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md px-8 py-4 text-base font-bold text-white ring-1 ring-white/20 hover:bg-white/20 transition-all duration-300">
                 <Icons.MessageCircle className="w-4 h-4" />
                 Hubungi via WhatsApp
               </a>

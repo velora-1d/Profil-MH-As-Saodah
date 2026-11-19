@@ -6,7 +6,7 @@ import { Newspaper, MapPin, Phone, MessageCircle } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 import InformasiClient from './InformasiClient';
 
-export const revalidate = 60; // ISR: revalidasi setiap 60 detik
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
     title: 'Berita & Informasi | MI MH As-Saodah',
@@ -15,12 +15,18 @@ export const metadata = {
 
 export default async function InformasiPage() {
     // Langsung query DB — tidak bergantung API URL eksternal
-    const rows = await db
-        .select()
-        .from(webPosts)
-        .where(eq(webPosts.status, 'published'))
-        .orderBy(desc(webPosts.publishedAt), desc(webPosts.createdAt))
-        .limit(100);
+    let rows: (typeof webPosts.$inferSelect)[] = [];
+    try {
+        rows = await db
+            .select()
+            .from(webPosts)
+            .where(eq(webPosts.status, 'published'))
+            .orderBy(desc(webPosts.publishedAt), desc(webPosts.createdAt))
+            .limit(100);
+    } catch (err) {
+        console.warn('DB query in InformasiPage fallback:', err);
+        rows = [];
+    }
 
     const posts = rows.map(row => ({
         id: row.id,

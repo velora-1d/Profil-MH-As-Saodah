@@ -115,14 +115,17 @@ export default function TentangPage() {
                             className="relative aspect-square lg:aspect-auto lg:h-[500px] rounded-[3rem] overflow-hidden shadow-2xl"
                         >
                             <Image 
-                                src="/images/school-history.png" 
+                                src={settings.history_image ? storageUrl(settings.history_image) : "/images/school-history.png"} 
                                 alt="Sejarah Sekolah" 
                                 fill 
                                 className="object-cover" 
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
                             <div className="absolute bottom-8 left-8 right-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                                <p className="text-white font-bold italic">&quot;Mendidik dengan hati, membangun masa depan dengan ilmu.&quot;</p>
+                                <p className="text-white font-bold italic">&quot;{settings.school_quote || "Mendidik dengan hati, membangun masa depan dengan ilmu."}&quot;</p>
+                                {settings.school_quote_author && (
+                                    <p className="text-white/80 text-xs mt-1 font-semibold text-right">— {settings.school_quote_author}</p>
+                                )}
                             </div>
                         </motion.div>
                     </div>
@@ -160,7 +163,14 @@ export default function TentangPage() {
                                 <h3 className="text-xl font-bold text-slate-900 mb-4">Misi</h3>
                                 <div className="text-slate-600 leading-relaxed space-y-2">
                                     {settings.school_mission ? (
-                                        <p>{settings.school_mission}</p>
+                                        <ul className="space-y-2">
+                                            {settings.school_mission.split('\n').map((m) => m.trim()).filter(Boolean).map((m, i) => (
+                                                <li key={i} className="flex gap-3 items-start">
+                                                    <BookOpen className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                                                    <span>{m}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     ) : (
                                         <ul className="space-y-2">
                                             {['Menyelenggarakan pendidikan berkualitas berdasarkan Al-Quran dan Sunnah',
