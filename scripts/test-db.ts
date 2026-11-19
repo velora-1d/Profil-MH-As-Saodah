@@ -1,4 +1,4 @@
-import { db } from './src/db';
+import { db } from '../src/db';
 import { contactMessages, ppdbRegistrations } from './src/db/schema';
 import { count } from 'drizzle-orm';
 
