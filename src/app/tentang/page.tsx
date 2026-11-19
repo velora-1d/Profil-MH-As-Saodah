@@ -191,6 +191,36 @@ export default function TentangPage() {
                 </div>
             </section>
 
+            {/* Pilar Karakter & Nilai Utama */}
+            <section className="py-20 bg-slate-50/70 border-y border-slate-100">
+                <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                    <SectionHeading badge="Nilai Utama" title="Pilar Karakter Santri" subtitle="Fondasi karakter dan akhlak yang kami tanamkan kepada seluruh peserta didik." />
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                        {[1, 2, 3, 4, 5, 6].filter(i => settings[`values_title_${i}`] || i <= 4).map((i) => {
+                            const defaultTitles = ['Qur\'ani', 'Berakhlak Mulia', 'Berwawasan Global', 'Cinta Tanah Air'];
+                            const defaultDescs = [
+                                'Menanamkan kecintaan dan pengamalan nilai Al-Qur\'an sejak dini.',
+                                'Membina adab dan kesantunan dalam interaksi sehari-hari.',
+                                'Mempersiapkan santri dengan wawasan ilmu pengetahuan modern.',
+                                'Menumbuhkan jiwa nasionalisme dan kepedulian sosial.'
+                            ];
+                            const title = settings[`values_title_${i}`] || defaultTitles[i - 1] || `Pilar ${i}`;
+                            const desc = settings[`values_desc_${i}`] || defaultDescs[i - 1] || '';
+                            if (!title) return null;
+                            return (
+                                <motion.div key={i} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg mb-4">
+                                        0{i}
+                                    </div>
+                                    <h4 className="font-bold text-slate-900 text-base mb-2">{title}</h4>
+                                    <p className="text-slate-600 text-xs leading-relaxed">{desc}</p>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
             {/* Profil Guru */}
             {teachers.length > 0 && (
                 <section id="guru" className="py-24 bg-slate-50">
